@@ -16,32 +16,63 @@ export class HomeComponent {
   constructor(private ProductsService: ProductsService) {}
 
   products: Product[] = [];
-  onProductOutput(product: Product){
-  console.log(product, 'Output');
-
+  onProductOutput(product: Product) {
+    console.log(product, 'Output');
   }
   totalRecords: number = 0;
-rows: number = 5
+  rows: number = 5;
   // for paginator
-  onPageChange(event: any){
-    this.fetchProducts(event.page, event.rows)
-
+  onPageChange(event: any) {
+    this.fetchProducts(event.page, event.rows);
   }
 
-
-  fetchProducts(page: number, perPage: number){
+  fetchProducts(page: number, perPage: number) {
     this.ProductsService.getProducts('http://localhost:3000/clothes', {
       page: 0,
       perPage: 5,
-    }).subscribe((products: Products) => {
-      this.products = products.items;
-      this.totalRecords = products.total;
-    });
+    }).subscribe({
+      next: (data) => {
+        console.log(data); // for successful request
+      },
+      error: (error) => {
+        console.log(error); // for error message
+      },
 
+    });
+  }
+  editProduct(product: Product, id: number) {
+    this.ProductsService.editProduct(
+      `http://localhost:3000/clothes/${id}`,
+      product
+    ).subscribe({
+      next: (data) => {
+        console.log(data); // for successful request
+      },
+      error: (error) => {
+        console.log(error); // for error message
+      },
+    });
   }
 
+  deleteProduct( id: number) {
+    this.ProductsService.deleteProduct(
+      `http://localhost:3000/clothes/${id}`
+      
+    ).subscribe({
+      next: (data) => {
+        console.log(data); // for successful request
+      },
+      error: (error) => {
+        console.log(error); // for error message
+      },
+    });
+  }
+
+  addProduct(product: Product) {
+    console.log(product, 'Add');
+  }
 
   ngOnInit() {
-    this.fetchProducts(0, this.rows)
+    this.fetchProducts(0, this.rows);
   }
 }
